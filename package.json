@@ -1,0 +1,10 @@
+{
+  "name": "fileshare-app",
+  "version": "1.0.0",
+  "description": "A simple file sharing application",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
