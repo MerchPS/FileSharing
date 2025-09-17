@@ -9,11 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadLink = document.getElementById('downloadLink');
     const copyButton = document.getElementById('copyButton');
 
-    // Konfigurasi JSONBin
-    const binId = 'YOUR_BIN_ID'; // Ganti dengan ID bin Anda
-    const masterKey = '$2a$10$37iV2HZGa9Jd00XfOi6YmeRHoyYN0fCyvE/CQJfkqINjrs/d2yM3C';
-    const accessKey = '$2a$10$4VeEjwfvcnTsyjehf3YD/OES9lNI2Ef8Pfv6WN.O34ZSr06E6ix7m';
-
     let selectedFile = null;
 
     // Event listeners untuk drag and drop
@@ -101,28 +96,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 try {
-                    // Simpan ke JSONBin
-                    const response = await fetch(`https://api.jsonbin.io/v3/b`, {
+                    // Panggil API route untuk menyimpan data
+                    const response = await fetch('/api/upload', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': masterKey,
-                            'X-Access-Key': accessKey,
-                            'X-Bin-Name': selectedFile.name,
-                            'X-Bin-Private': 'false'
+                            'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(fileData)
                     });
                     
                     if (!response.ok) {
-                        throw new Error('Gagal menyimpan data');
+                        const error = await response.json();
+                        throw new Error(error.message || 'Gagal menyimpan data');
                     }
                     
                     const result = await response.json();
-                    const fileId = result.metadata.id;
                     
                     // Generate download link
-                    const link = `${window.location.origin}${window.location.pathname}?id=${fileId}`;
+                    const link = `${window.location.origin}/api/download?id=${result.id}`;
                     downloadLink.value = link;
                     downloadSection.style.display = 'block';
                     
@@ -131,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                 } catch (error) {
                     console.error('Error:', error);
-                    alert('Terjadi kesalahan saat mengunggah file.');
+                    alert('Terjadi kesalahan saat mengunggah file: ' + error.message);
                 } finally {
                     uploadButton.disabled = false;
                     progressContainer.style.display = 'none';
@@ -167,48 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileId = urlParams.get('id');
     
     if (fileId) {
-        downloadFile(fileId);
-    }
-
-    async function downloadFile(fileId) {
-        try {
-            // Ambil data dari JSONBin
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${fileId}`, {
-                headers: {
-                    'X-Master-Key': masterKey,
-                    'X-Access-Key': accessKey
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error('File tidak ditemukan');
-            }
-            
-            const result = await response.json();
-            const fileData = result.record;
-            
-            // Konversi base64 kembali ke blob
-            const byteCharacters = atob(fileData.content);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: fileData.type });
-            
-            // Buat link download
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = fileData.filename;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat mengunduh file.');
-        }
+        // Redirect ke API download
+        window.location.href = `/api/download?id=${fileId}`;
     }
 });
