@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileShare - Berbagi File Mudah</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>FileShare</h1>
+            <p>Unggah dan bagikan file hingga 500MB</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <h2>Unggah File</h2>
+                <div class="drop-zone" id="dropZone">
+                    <span class="drop-zone__prompt">Drop file di sini atau klik untuk mengunggah</span>
+                    <input type="file" name="file" id="fileInput" class="drop-zone__input" multiple>
+                </div>
+                <div class="progress-container" id="progressContainer" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar"></div>
+                    </div>
+                    <p id="progressText">Mengunggah... 0%</p>
+                </div>
+                <button id="uploadButton" class="btn">Unggah File</button>
+            </div>
+
+            <div class="download-section" id="downloadSection" style="display: none;">
+                <h2>File Berhasil Diunggah!</h2>
+                <p>Bagikan link ini untuk mengunduh file:</p>
+                <div class="link-container">
+                    <input type="text" id="downloadLink" readonly>
+                    <button id="copyButton" class="btn">Salin Link</button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>Cara Penggunaan</h3>
+                <ol>
+                    <li>Unggah file dengan mengeklik area unggah atau menyeret file</li>
+                    <li>Tunggu hingga proses unggah selesai</li>
+                    <li>Salin link yang dihasilkan dan bagikan</li>
+                </ol>
+                <p><strong>Catatan:</strong> File dapat diunduh oleh siapapun yang memiliki link.</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 FileShare. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
